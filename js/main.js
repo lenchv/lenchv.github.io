@@ -360,7 +360,6 @@ $(document).ready( function () {
 		} else if (numberSlide > slides.length-1) {
 			numberSlide = 0;
 		}
-		console.log(numberSlide);
 		newSlide = parseInfoModal(slides.eq(numberSlide).clone());
 		
 		$("#modal-window").prepend(newSlide);
