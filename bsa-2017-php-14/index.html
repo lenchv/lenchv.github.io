@@ -1,119 +1,333 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Calendar &bullet; 0.0.1</title>
-		<meta charset="utf-8">
-		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<!-- MomentJS -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment-with-locales.min.js"></script>
-		<!-- Lodash -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
-		<!-- jQuery -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-		<!-- Semantic UI -->
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.css" rel="stylesheet">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.js"></script>
-		<!-- Lato -->
-		<link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i&amp;subset=latin-ext" rel="stylesheet">
-		<!-- OpenSans -->
-		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
-		<!-- Calendar -->
-		<style>
-			/* Calendar */
-			html, body,
-			#calendar { width: 100%; height: 100%; overflow: hidden; }
-			#calendar > nav { height: 50px; display: flex; justify-content: center; align-items: center; }
-			#calendar > nav > .nav { height: 50px; width: 50px; padding: 5px; }
-			#calendar > nav > .nav.hide { position: absolute; left: 0; top: 0; }
-			#calendar > nav > .nav svg { fill: #777777; }
-			#calendar > nav > .nav:hover svg { fill: #000000; }
-			#calendar > nav > .title { color: #666666; font-weight: 300; font-size: 25px; line-height: 25px; text-align: center; letter-spacing: -1px; position: relative; }
-			#calendar > nav > .title strong { font-weight: 800; }
-				/* Calendar: Year */
-				#calendar > .YYYY { position: absolute; width: 100%; left: 0; top: 50px; bottom: 10px; }
-					/* Calendar: Months */
-					#calendar > .YYYY > .M { float: left; width: calc((100% - 50px) / 4); margin-left: 10px; text-align: center; }
-						/* Calendar: Rows */
-						#calendar > .YYYY[data-w="16"] > .M[data-w="4"] { height: calc(100%/16*4); }
-						#calendar > .YYYY[data-w="16"] > .M[data-w="5"] { height: calc(100%/16*5); }
-						#calendar > .YYYY[data-w="16"] > .M[data-w="6"] { height: calc(100%/16*6); }
-						#calendar > .YYYY[data-w="17"] > .M[data-w="4"] { height: calc(100%/17*4); }
-						#calendar > .YYYY[data-w="17"] > .M[data-w="5"] { height: calc(100%/17*5); }
-						#calendar > .YYYY[data-w="17"] > .M[data-w="6"] { height: calc(100%/17*6); }
-						#calendar > .YYYY[data-w="18"] > .M[data-w="4"] { height: calc(100%/18*4); }
-						#calendar > .YYYY[data-w="18"] > .M[data-w="5"] { height: calc(100%/18*5); }
-						#calendar > .YYYY[data-w="18"] > .M[data-w="6"] { height: calc(100%/18*6); }
-							/* Calendar: Month-names */
-							#calendar > .YYYY > .M > .MMMM { color: #444444; font-weight: 700; line-height: 1.5em; text-transform: uppercase; text-align: center; }
-							#calendar > .YYYY > .M > .ddd { font-size: 10px; font-weight: 700; line-height: 2em; text-transform: uppercase; text-align: center; width: calc(100%/7); float: left; }
-							#calendar > .YYYY > .M > .ddd:before { content: attr(data-ddd); }
-								/* Calendar: Days */
-								#calendar > .YYYY > .M > .MM { clear: both; width: 100%; height: calc(100% - 3.5em); }
-								#calendar > .YYYY > .M[data-w="4"] > .MM > .D { height: calc((100% + 3px) / 4); }
-								#calendar > .YYYY > .M[data-w="5"] > .MM > .D { height: calc((100% + 4px) / 5); }
-								#calendar > .YYYY > .M[data-w="6"] > .MM > .D { height: calc((100% + 5px) / 6); }
-								#calendar > .YYYY > .M > .MM > .D { float: left; width: calc((100% + 6px) / 7); position: relative; border: 1px solid #DEDEDE; margin-right: -1px; margin-bottom: -1px; position: relative; display: flex; align-items: center; justify-content: center; color: #333333; background: #FFFFFF; text-decoration: none; }
-								#calendar > .YYYY > .M > .MM > .D.active { font-weight: bold; background: #32358F; color: #FFFFFF; box-shadow: inset 1px 0px 0px #FFFFFF, inset -1px 0px 0px #FFFFFF, inset 0px -1px 0px #FFFFFF, inset 0px 1px 0px #FFFFFF; }
-								#calendar > .YYYY > .M > .MM > .D:first-child[data-d="1"] { margin-left: calc(((100% + 6px) / 7) * 1 - 1px); }
-								#calendar > .YYYY > .M > .MM > .D:first-child[data-d="2"] { margin-left: calc(((100% + 6px) / 7) * 2 - 2px); }
-								#calendar > .YYYY > .M > .MM > .D:first-child[data-d="3"] { margin-left: calc(((100% + 6px) / 7) * 3 - 3px); }
-								#calendar > .YYYY > .M > .MM > .D:first-child[data-d="4"] { margin-left: calc(((100% + 6px) / 7) * 4 - 4px); }
-								#calendar > .YYYY > .M > .MM > .D:first-child[data-d="5"] { margin-left: calc(((100% + 6px) / 7) * 5 - 5px); }
-								#calendar > .YYYY > .M > .MM > .D:first-child[data-d="6"] { margin-left: calc(((100% + 6px) / 7) * 6 - 6px); }
-								#calendar > .YYYY > .M > .MM > .D > .num { position: absolute; font-size: 11px; top: 0px; left: 4px; }
-								#calendar > .YYYY > .M > .MM > .D:hover > .num { font-weight: 700; }
-		</style>
-	</head>
-	<body>
-		<div id="calendar"></div>
-		<script>
-			/* Calendar */
-			class Calendar {
-				constructor(element, locale, callback) {
-					this.element = element;
-					this.locale = locale;
-					this.callback = callback;
-					moment.locale(locale);
-					this.show(moment().year());
-				}
-			
-				show(year) {
-					this.year = year;
-					var m, d1, t = [], y = '', w = 0, r = 0, n = _.reduce(moment.weekdaysShort(), function(n, ddd) { return n += '<div class="ddd" data-ddd="' + ddd + '"></div>'; }, '');
-					for (m = 0; m <= 11; m++) {
-						d1 = moment([year, m, 1]);
-						t.push('<div class="MMMM">' + moment.months()[m] + '</div>' + n + '<div class="MM"><a href="#" class="' + (year == moment().year() && m == moment().month() && 1 == moment().date() ? 'active ' : '') + 'D" data-d="' + d1.day() + '" data-date="' + year + '-' + ('00' + (m + 1)).slice(-2) + '-01" draggable="false"><span class="num">1</span><div class="content"></div></a>' + _.range(2, d1.daysInMonth() + 1).reduce(function(MM, d) { return MM += '<a href="#" class="' + (year == moment().year() && m == moment().month() && d == moment().date() ? 'active ' : '') + 'D" data-date="' + year + '-' + ('00' + (m + 1)).slice(-2) + '-' + ('00' + d).slice(-2) + '" draggable="false">' + '<span class="num">' + d + '</span>' + '<div class="content"></div></a>'; }, '') + '</div>');
-						w = Math.max(w, Math.ceil((d1.day() + d1.daysInMonth()) / 7));
-						if (m == 3 || m == 7 || m == 11) {
-							y += '<div class="M" data-w="' + w + '">' + t.join('</div><div class="M" data-w="' + w + '">') + '</div>';
-							r += w;
-							w = 0;
-							t = [];
-						}
-					}
-					this.element.innerHTML = '<nav><a href="#" class="nav prev" draggable="false"><svg viewBox="0 0 512 512"><path d="M189.8,349.7c3.1-3.1,3-8,0-11.3L123.4,264H408c4.4,0,8-3.6,8-8c0-4.4-3.6-8-8-8H123.4l66.3-74.4c2.9-3.4,3.2-8.1,0.1-11.2c-3.1-3.1-8.5-3.3-11.4-0.1c0,0-79.2,87-80,88S96,253.1,96,256s1.6,4.9,2.4,5.7s80,88,80,88c1.5,1.5,3.6,2.3,5.7,2.3C186.2,352,188.2,351.2,189.8,349.7z"/></svg></a><div class="title"><strong>' + year + '</strong></div><a href="#" class="nav next" draggable="false"><svg viewBox="0 0 512 512"><path d="M322.2,349.7c-3.1-3.1-3-8,0-11.3l66.4-74.4H104c-4.4,0-8-3.6-8-8c0-4.4,3.6-8,8-8h284.6l-66.3-74.4c-2.9-3.4-3.2-8.1-0.1-11.2c3.1-3.1,8.5-3.3,11.4-0.1c0,0,79.2,87,80,88s2.4,2.8,2.4,5.7s-1.6,4.9-2.4,5.7s-80,88-80,88c-1.5,1.5-3.6,2.3-5.7,2.3C325.8,352,323.8,351.2,322.2,349.7z"/></svg></a></nav><div class="YYYY" data-w="' + r + '">' + y + '</div>';
-					this.element.querySelector('.prev').addEventListener('click', () => { this.show(--this.year); });
-					this.element.querySelector('.next').addEventListener('click', () => { this.show(++this.year); });
-					this.element.querySelectorAll('.D').forEach((element) => {
-						element.addEventListener('click', (event) => {
-							var element = event.target;
-							while (element) {
-								if (element.hasAttribute('data-date')) {
-									this.callback(element.getAttribute('data-date'));
-									break;
-								} else {
-									element = element.parentElement;
-								}
-							}
-						});
-					});
-				}
-			}
-			
-			new Calendar(document.getElementById('calendar'), 'en', function(date) {
-				alert(date);
-			});
-		</script>
-	</body>
+  <head>
+    <title>Calendar &bullet; 0.0.1</title>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- MomentJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment-with-locales.min.js"></script>
+    <!-- Lodash -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Semantic UI -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.js"></script>
+    <!-- Lato -->
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i&amp;subset=latin-ext" rel="stylesheet">
+    <!-- OpenSans -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+    <!-- Calendar -->
+    <style>
+      /* Calendar */
+      html, body,
+      #calendar { width: 100%; height: 100%; overflow: hidden; }
+      #calendar > nav { height: 50px; display: flex; justify-content: center; align-items: center; }
+      #calendar > nav > .nav { height: 50px; width: 50px; padding: 5px; }
+      #calendar > nav > .nav.hide { position: absolute; left: 0; top: 0; }
+      #calendar > nav > .nav svg { fill: #777777; }
+      #calendar > nav > .nav:hover svg { fill: #000000; }
+      #calendar > nav > .title { color: #666666; font-weight: 300; font-size: 25px; line-height: 25px; text-align: center; letter-spacing: -1px; position: relative; }
+      #calendar > nav > .title strong { font-weight: 800; }
+        /* Calendar: Year */
+        #calendar > .YYYY { position: absolute; width: 100%; left: 0; top: 50px; bottom: 10px; }
+          /* Calendar: Months */
+          #calendar > .YYYY > .M { float: left; width: calc((100% - 50px) / 4); margin-left: 10px; text-align: center; }
+            /* Calendar: Rows */
+            #calendar > .YYYY[data-w="16"] > .M[data-w="4"] { height: calc(100%/16*4); }
+            #calendar > .YYYY[data-w="16"] > .M[data-w="5"] { height: calc(100%/16*5); }
+            #calendar > .YYYY[data-w="16"] > .M[data-w="6"] { height: calc(100%/16*6); }
+            #calendar > .YYYY[data-w="17"] > .M[data-w="4"] { height: calc(100%/17*4); }
+            #calendar > .YYYY[data-w="17"] > .M[data-w="5"] { height: calc(100%/17*5); }
+            #calendar > .YYYY[data-w="17"] > .M[data-w="6"] { height: calc(100%/17*6); }
+            #calendar > .YYYY[data-w="18"] > .M[data-w="4"] { height: calc(100%/18*4); }
+            #calendar > .YYYY[data-w="18"] > .M[data-w="5"] { height: calc(100%/18*5); }
+            #calendar > .YYYY[data-w="18"] > .M[data-w="6"] { height: calc(100%/18*6); }
+              /* Calendar: Month-names */
+              #calendar > .YYYY > .M > .MMMM { color: #444444; font-weight: 700; line-height: 1.5em; text-transform: uppercase; text-align: center; }
+              #calendar > .YYYY > .M > .ddd { font-size: 10px; font-weight: 700; line-height: 2em; text-transform: uppercase; text-align: center; width: calc(100%/7); float: left; }
+              #calendar > .YYYY > .M > .ddd:before { content: attr(data-ddd); }
+                /* Calendar: Days */
+                #calendar > .YYYY > .M > .MM { clear: both; width: 100%; height: calc(100% - 3.5em); }
+                #calendar > .YYYY > .M[data-w="4"] > .MM > .D { height: calc((100% + 3px) / 4); }
+                #calendar > .YYYY > .M[data-w="5"] > .MM > .D { height: calc((100% + 4px) / 5); }
+                #calendar > .YYYY > .M[data-w="6"] > .MM > .D { height: calc((100% + 5px) / 6); }
+                #calendar > .YYYY > .M > .MM > .D { float: left; width: calc((100% + 6px) / 7); position: relative; border: 1px solid #DEDEDE; margin-right: -1px; margin-bottom: -1px; position: relative; display: flex; align-items: center; justify-content: center; color: #333333; background: #FFFFFF; text-decoration: none; }
+                #calendar > .YYYY > .M > .MM > .D.active { font-weight: bold; background: #32358F; color: #FFFFFF; box-shadow: inset 1px 0px 0px #FFFFFF, inset -1px 0px 0px #FFFFFF, inset 0px -1px 0px #FFFFFF, inset 0px 1px 0px #FFFFFF; }
+                #calendar > .YYYY > .M > .MM > .D:first-child[data-d="1"] { margin-left: calc(((100% + 6px) / 7) * 1 - 1px); }
+                #calendar > .YYYY > .M > .MM > .D:first-child[data-d="2"] { margin-left: calc(((100% + 6px) / 7) * 2 - 2px); }
+                #calendar > .YYYY > .M > .MM > .D:first-child[data-d="3"] { margin-left: calc(((100% + 6px) / 7) * 3 - 3px); }
+                #calendar > .YYYY > .M > .MM > .D:first-child[data-d="4"] { margin-left: calc(((100% + 6px) / 7) * 4 - 4px); }
+                #calendar > .YYYY > .M > .MM > .D:first-child[data-d="5"] { margin-left: calc(((100% + 6px) / 7) * 5 - 5px); }
+                #calendar > .YYYY > .M > .MM > .D:first-child[data-d="6"] { margin-left: calc(((100% + 6px) / 7) * 6 - 6px); }
+                #calendar > .YYYY > .M > .MM > .D > .num { position: absolute; font-size: 11px; top: 0px; left: 4px; }
+                #calendar > .YYYY > .M > .MM > .D:hover > .num { font-weight: 700; }
+
+                #calendar > .YYYY > .M > .MM > .D > .label { position: absolute; top: 3px; right: 3px; }
+                #calendar > .YYYY > .M > .MM > .D:hover > .label { opacity: .75; }
+                #calendar > .YYYY > .M > .MM > .D.selected { background-color: rgba(0,0,0,.05); color: #444;}
+                .center { text-align: center; }
+    </style>
+  </head>
+  <body>
+    <div id="calendar"></div>
+    <script>
+      /* Calendar */
+      class Calendar {
+        constructor(element, locale, callback) {
+          this.element = element;
+          this.locale = locale;
+          this.callback = callback;
+          moment.locale(locale);
+          this._eventId = 1;
+          this.events = [];
+
+          this.show(moment().year());
+        }
+
+        /**
+         * Add calendar event to collection 
+         */
+        addEvent(e) {
+          var color = [ 'red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey' ][Math.round(Math.random() * 12)],
+            event = {
+              date: e.date,
+              eventId: this._eventId++,
+              title: e.title,
+              description: e.description,
+              participants: e.participants || [],
+              color: color
+            };
+
+          this.events.push(event);
+          this.show(this.year);
+          return this;
+        }
+        /**
+         * Render day cell
+         */
+        _getHtmlDay(d, m, y) {
+          var date = `${y}-${('00' + (m + 1)).slice(-2)}-${('00' + d).slice(-2)}`,
+            color,
+            events = this._getEvents(date).reduce(function(title, event) {
+              color = event.color;
+              if (title.length < 5) {
+                title.push('<i class=\'calendar outline icon\'></i>' + event.title);
+              } else if (title.length === 5) {
+                title.push("<div class='center'>...</div>");
+              }
+              return title;
+            }, []).join('<div class=\'ui divider\'></div>');
+          return `<a href="#" class="${(
+              y == moment().year() && m == moment().month() && d == moment().date() 
+              ? 'active ' 
+              : ''
+            )}D" ${(
+              d == 1 
+              ? 'data-d="' + moment([y, m, d]).day() + '"'
+              : ''
+            )} data-date="${date}" draggable="false">
+            <span class="num">${d}</span> 
+            ${events.length !== 0 ? `<span class="ui ${color} empty circular label" data-html="${events}"></span>` : ''}
+          </a>`;
+        }
+
+        _hasEvent(date) {
+          return this.events.find(function (event) {
+            return event.date === date;
+          }) !== undefined;
+        }
+
+        _getEvents(date) {
+          return this.events.filter(function (event) {
+            return event.date === date;
+          });
+        }
+        /**
+         * Render calendar
+         */
+        show(year) {
+          this.year = year;
+          var m, 
+            d1, 
+            t = [], 
+            y = '', 
+            w = 0, 
+            r = 0, 
+            n = _.reduce(moment.weekdaysShort(), function(n, ddd) { return n += `<div class="ddd" data-ddd="${ddd}"></div>`; }, '');
+          for (m = 0; m <= 11; m++) {
+            d1 = moment([year, m, 1]);
+            t.push(
+              `<div class="MMMM">${moment.months()[m]}</div>${n}
+                <div class="MM">
+                  ${_.range(1, d1.daysInMonth() + 1).reduce((MM, d) => { 
+                    return MM += this._getHtmlDay(d, m, year); 
+                  }, '')}
+                </div>`
+            );
+            w = Math.max(w, Math.ceil((d1.day() + d1.daysInMonth()) / 7));
+            if (m == 3 || m == 7 || m == 11) {
+              y += `<div class="M" data-w="${w}">${t.join('</div><div class="M" data-w="' + w + '">')}</div>`;
+              r += w;
+              w = 0;
+              t = [];
+            }
+          }
+          this.element.innerHTML = '<nav><a href="#" class="nav prev" draggable="false"><svg viewBox="0 0 512 512"><path d="M189.8,349.7c3.1-3.1,3-8,0-11.3L123.4,264H408c4.4,0,8-3.6,8-8c0-4.4-3.6-8-8-8H123.4l66.3-74.4c2.9-3.4,3.2-8.1,0.1-11.2c-3.1-3.1-8.5-3.3-11.4-0.1c0,0-79.2,87-80,88S96,253.1,96,256s1.6,4.9,2.4,5.7s80,88,80,88c1.5,1.5,3.6,2.3,5.7,2.3C186.2,352,188.2,351.2,189.8,349.7z"/></svg></a><div class="title"><strong>' + year + '</strong></div><a href="#" class="nav next" draggable="false"><svg viewBox="0 0 512 512"><path d="M322.2,349.7c-3.1-3.1-3-8,0-11.3l66.4-74.4H104c-4.4,0-8-3.6-8-8c0-4.4,3.6-8,8-8h284.6l-66.3-74.4c-2.9-3.4-3.2-8.1-0.1-11.2c3.1-3.1,8.5-3.3,11.4-0.1c0,0,79.2,87,80,88s2.4,2.8,2.4,5.7s-1.6,4.9-2.4,5.7s-80,88-80,88c-1.5,1.5-3.6,2.3-5.7,2.3C325.8,352,323.8,351.2,322.2,349.7z"/></svg></a></nav><div class="YYYY" data-w="' + r + '">' + y + '</div>';
+          this.element.querySelector('.prev').addEventListener('click', () => { this.show(--this.year); });
+          this.element.querySelector('.next').addEventListener('click', () => { this.show(++this.year); });
+          this.element.querySelectorAll('.D').forEach((element) => {
+            element.addEventListener('click', (event) => {
+              var element = event.target;
+              while (element) {
+                if (element.hasAttribute('data-date')) {
+                  this.callback(element.getAttribute('data-date'));
+                  var selected = this.element.querySelector('.selected');
+                  if (selected) {
+                    selected.classList.remove('selected');
+                  }
+                  element.classList.add('selected');
+                  break;
+                } else {
+                  element = element.parentElement;
+                }
+              }
+            });
+          });
+          $(this.element).find(".D > .label").popup();
+        }
+
+        showEvent(date) {
+          var modal = document.createElement('div'),
+            accordion = document.createElement('div'),
+            form = document.createElement('div');
+          modal.className = "ui modal";
+          modal.innerHTML = `<i class="close icon"></i>
+            <div class="header">Your event(s) at ${date}</div>
+            <div class='content'></div>
+            <div class='actions'>
+              <div class="ui positive right labeled icon button">
+                Okay
+                <i class="checkmark icon"></i>
+              </div>
+            </div>`;
+
+            accordion.className = 'ui styled fluid accordion';
+            accordion.innerHTML = this._getEvents(date).reduce((html, event, i) => html + `<div class="title active">
+                <i class="dropdown icon"></i>
+                ${event.title}
+              </div>
+              <div class="content ${i === 0 ? 'active' : ''}">
+                <p class="transition visible"">${event.description}</p>
+                ${ event.participants.length > 0 ? event.participants.reduce((participants, p) => participants + 
+                  `<a class="ui image avatar" href="${p.url || '#'}" data-content='${p.name || ''}' target="_blank">
+                    <img src="${p.avatar || 'data:image/png;base64,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'}">
+                  </a>`, '') : ''
+                }
+              </div>`, '');
+            $(accordion).accordion().find(".avatar").popup();
+            $(modal)
+              .modal({
+                inverted: true
+              })
+              .modal('show')
+              .find('.content')
+              .append(accordion);
+        }
+      }
+      
+      var calendar = new Calendar(document.getElementById('calendar'), 'en', function(date) {
+        if (this._hasEvent(date)) {
+          this.showEvent(date);
+        }
+      });
+      calendar
+        .addEvent({
+          date: "2017-08-02",
+          title: "Day of Airborne troops",
+          description: "Swim in the fountain",
+          participants: [{
+            name: "Paratrooper",
+            avatar: "http://xn--g1afqjd0a.xn--p1ai/wp-content/uploads/2011/08/%D0%B4%D0%B5%D0%BD%D1%8C-%D0%92%D0%94%D0%92-2011-1.jpg",
+            url: "http://xn--g1afqjd0a.xn--p1ai/wp-content/uploads/2011/08/%D0%B4%D0%B5%D0%BD%D1%8C-%D0%92%D0%94%D0%92-2011-1.jpg"
+          }]
+        })
+        .addEvent({
+          date: "2017-07-31",
+          title: "Task deadline",
+          description: "Complete the JS task and send it for review",
+          participants: [
+            {
+              name: "Lench Vladimir",
+              url: "https://binarystudioacademy17.slack.com/team/lenchv",
+              avatar: "https://ca.slack-edge.com/T63EHP078-U63FETV6K-c4650fafaa44-72"
+            },
+            {
+              name: "Misha Kaharlykskyi",
+              url: "https://binarystudioacademy17.slack.com/team/kaharlykskyi",
+              avatar: "https://ca.slack-edge.com/T63EHP078-U62LE2JFL-2f7fd2a7632e-72"
+            },
+            {
+              name: "Marina Kruglova",
+              url: "https://binarystudioacademy17.slack.com/team/marina_kruglova",
+              avatar: "https://ca.slack-edge.com/T63EHP078-U63QT5G5U-g1505da05dd5-72"
+            },
+            {
+              name: "Mykola Ivashchuk",
+              url: "https://binarystudioacademy17.slack.com/team/mykola",
+              avatar: "https://ca.slack-edge.com/T63EHP078-U623VL96U-719252892509-72"
+            },
+            {
+              name: "Petro Ostapuk",
+              url: "https://binarystudioacademy17.slack.com/team/petro",
+              avatar: "https://ca.slack-edge.com/T63EHP078-U62PB74MT-0059fc91868e-72"
+            },
+            {
+              name: "Denis Isaychenko",
+              url: "https://binarystudioacademy17.slack.com/team/rhinodontypicus",
+              avatar: "https://ca.slack-edge.com/T63EHP078-U62JP0R6X-70ed5d1a6986-72"
+            },
+            {
+              name: "Maksym Kolesnykov",
+              url: "https://binarystudioacademy17.slack.com/team/maxkolesnikov93",
+              avatar: "https://ca.slack-edge.com/T63EHP078-U63RBBX63-3d261ce4d170-72"
+            },
+            {
+              name: "Ruslan Danylevskyj",
+              url: "https://binarystudioacademy17.slack.com/team/ruigdan92",
+              avatar: "https://ca.slack-edge.com/T63EHP078-U620TH3Q8-8677f6bb8d64-72"
+            },
+            {
+              name: "Sergii Bubalo",
+              url: "https://binarystudioacademy17.slack.com/team/sergii.bubalo",
+              avatar: "https://ca.slack-edge.com/T63EHP078-U620T05CY-ga6129da789d-72"
+            }
+          ]
+        })
+        .addEvent({
+          date: "2017-07-20",
+          title: "Come up with a homework idea",
+          description: "Well, yeah, you know. You've got to engage the audience, inspire them to do something if not great than warm at least. Something you'll be glad to check on later."
+        })
+        .addEvent({
+          date: "2017-07-22",
+          title: "Parent's birthday",
+          description: "Yeah, both of them. Mom wanted a new bag — have no idea where to get one. Zara? Will see. Anyway, yeah, both of them, same day. Have to check those homeworks though."
+        })
+        .addEvent({
+          date: "2017-07-22",
+          title: "Friends' party",
+          description: "Go see some friends since you're visiting Ternopil, grab some beer, talk about life and how everything is shit.",
+          participants: [{
+              name: "Volodymyr Stoyko",
+              url: "https://www.facebook.com/corest",
+              avatar: "https://scontent-cdt1-1.xx.fbcdn.net/v/t1.0-9/19959082_10210721389766187_6789533543778955899_n.jpg?oh=204032e8f826891d02c566e5cdcdf384&oe=59C40BCC"
+          },{
+              name: "Some guy",
+              url: "#",
+          }]
+        });
+    </script>
+  </body>
 </html>
